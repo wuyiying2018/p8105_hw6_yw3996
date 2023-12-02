@@ -144,3 +144,18 @@ city_or%>%knitr::kable(digits = 4)
 | Tampa, FL          | victim_sexMale | 0.8077 |   0.3395 |   1.8599 |
 | Tulsa, OK          | victim_sexMale | 0.9758 |   0.6091 |   1.5439 |
 | Washington, DC     | victim_sexMale | 0.6902 |   0.4654 |   1.0123 |
+
+### Plotting
+
+``` r
+# Plotting
+ggplot(city_or, aes(x = reorder(city_state, OR), y = OR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2) +
+  coord_flip() +
+  xlab("City") +
+  ylab("Adjusted Odds Ratio (Male vs Female Victims)") +
+  ggtitle("Adjusted Odds Ratios for Solving Homicides by City")
+```
+
+<img src="hw6_files/figure-gfm/unnamed-chunk-6-1.png" width="90%" />

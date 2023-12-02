@@ -6,7 +6,15 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# R packages
 library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.asp = .8,
+  out.width = "90%"
+)
 ```
 
 ## 1
@@ -70,5 +78,17 @@ city_or <- city_models %>%
                             CI_upper = exp(conf.high))%>%
            select(city_state, term, OR, CI_lower, CI_upper)
 city_or%>%knitr::kable(digits = 4)
+```
+
+### Plotting
+```{r}
+# Plotting
+ggplot(city_or, aes(x = reorder(city_state, OR), y = OR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2) +
+  coord_flip() +
+  xlab("City") +
+  ylab("Adjusted Odds Ratio (Male vs Female Victims)") +
+  ggtitle("Adjusted Odds Ratios for Solving Homicides by City")
 ```
 
