@@ -251,3 +251,11 @@ skimr::skim(cleaned_birthweight)
 ```
 
 There is no missing data. The dimension of the birthweight data is `r nrow(cleaned_birthweight)` x `r ncol(cleaned_birthweight)`. The `r ncol(cleaned_birthweight)` variables include: `r names(cleaned_birthweight)`.
+
+### Fit the full model
+```{r}
+full_model <- lm(bwt ~ ., data = cleaned_birthweight)
+summary(full_model)
+```
+
+The coefficients for babysex, bhead, blength, delwt, gaweeks, mrace, parity, and smoken are significant at the 0.05 level. The NAs for pnumlbw, pnumsga, and wtgain suggest that there are issues with these variables in the model, such as multicollinearity.

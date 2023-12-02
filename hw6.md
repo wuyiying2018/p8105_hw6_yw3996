@@ -404,3 +404,57 @@ There is no missing data. The dimension of the birthweight data is 4342
 x 20. The 20 variables include: babysex, bhead, blength, bwt, delwt,
 fincome, frace, gaweeks, malform, menarche, mheight, momage, mrace,
 parity, pnumlbw, pnumsga, ppbmi, ppwt, smoken, wtgain.
+
+### Fit the full model
+
+``` r
+full_model <- lm(bwt ~ ., data = cleaned_birthweight)
+summary(full_model)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = bwt ~ ., data = cleaned_birthweight)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1097.68  -184.86    -3.33   173.09  2344.15 
+    ## 
+    ## Coefficients: (3 not defined because of singularities)
+    ##                     Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)       -6236.6841   660.1884  -9.447  < 2e-16 ***
+    ## babysexmale         -28.7073     8.4652  -3.391 0.000702 ***
+    ## bhead               130.7781     3.4523  37.881  < 2e-16 ***
+    ## blength              74.9536     2.0217  37.075  < 2e-16 ***
+    ## delwt                 4.1007     0.3948  10.386  < 2e-16 ***
+    ## fincome               0.2898     0.1795   1.614 0.106551    
+    ## fraceBlack           14.3313    46.1501   0.311 0.756168    
+    ## fraceAsian           21.2361    69.2960   0.306 0.759273    
+    ## fracePuerto Rican   -46.9962    44.6782  -1.052 0.292912    
+    ## fraceOther            4.2969    74.0741   0.058 0.953745    
+    ## gaweeks              11.5494     1.4654   7.882 4.06e-15 ***
+    ## malformpresent        9.7650    70.6259   0.138 0.890039    
+    ## menarche             -3.5508     2.8951  -1.226 0.220083    
+    ## mheight               9.7874    10.3116   0.949 0.342588    
+    ## momage                0.7593     1.2221   0.621 0.534418    
+    ## mraceBlack         -151.4354    46.0453  -3.289 0.001014 ** 
+    ## mraceAsian          -91.3866    71.9190  -1.271 0.203908    
+    ## mracePuerto Rican   -56.4787    45.1369  -1.251 0.210901    
+    ## parity               95.5411    40.4793   2.360 0.018307 *  
+    ## pnumlbw                   NA         NA      NA       NA    
+    ## pnumsga                   NA         NA      NA       NA    
+    ## ppbmi                 4.3538    14.8913   0.292 0.770017    
+    ## ppwt                 -3.4716     2.6121  -1.329 0.183913    
+    ## smoken               -4.8544     0.5871  -8.269  < 2e-16 ***
+    ## wtgain                    NA         NA      NA       NA    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 272.5 on 4320 degrees of freedom
+    ## Multiple R-squared:  0.7183, Adjusted R-squared:  0.717 
+    ## F-statistic: 524.6 on 21 and 4320 DF,  p-value: < 2.2e-16
+
+The coefficients for babysex, bhead, blength, delwt, gaweeks, mrace,
+parity, and smoken are significant at the 0.05 level. The NAs for
+pnumlbw, pnumsga, and wtgain suggest that there are issues with these
+variables in the model, such as multicollinearity.
