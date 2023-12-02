@@ -95,3 +95,18 @@ ggplot(city_or, aes(x = reorder(city_state, OR), y = OR)) +
 The plot displays the adjusted odds ratios (ORs) for solving homicides by city, comparing male to female victims. It appears that most cities have an OR less than 1, suggesting that homicides with male victims are less likely to be solved than those with female victims when controlling for other factors. This trend is consistent across various cities, indicating a possible widespread pattern. Some cities have notably wider confidence intervals, suggesting less precision in the estimate possibly due to smaller sample sizes or greater variability in the data. The cities are ranked by their estimated ORs, highlighting differences in the likelihood of solving homicides involving male victims across different urban areas. 
 
 ## 2
+### Download Central Park weather data
+```{r,message=FALSE,warning=FALSE}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2022-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = recode(id, USW00094728 = "CentralPark_NY"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+```
+
