@@ -246,6 +246,16 @@ r_squared <-
 ### Fitting density plots of two estimates
 
 ``` r
+log_betas_sd <- 
+  log_betas %>%
+  summarise(log_betas_sd = sd(as.numeric(log_betas),na.rm = TRUE)) %>%
+  pull(log_betas_sd)
+
+log_betas_mean <- 
+  log_betas %>% 
+  summarise(log_betas_mean = mean(as.numeric(log_betas), na.rm = TRUE)) %>%
+  pull(log_betas_mean)
+
 log_betas %>%
   ggplot(aes(x = log_betas)) + geom_density() +
   labs(title = "Distribution of log(Beta1 * Beta2)")
@@ -253,10 +263,26 @@ log_betas %>%
 
 <img src="hw6_files/figure-gfm/unnamed-chunk-10-1.png" width="90%" />
 
+The density curve for $\log(\hat\beta_1\times \hat\beta_2)$ is
+left-skewed with a mean around -6.1149 and a sd around 1.2273
+
 ``` r
+r_squared_sd <-
+  r_squared %>%
+  summarise(r_squared_sd = sd(r.squared)) %>%
+  pull(r_squared_sd)
+
+r_squared_mean <-
+  r_squared %>%
+  summarise(r_squared_mean = mean(r.squared)) %>%
+  pull(r_squared_mean)
+
 r_squared %>%
   ggplot(aes(x = r.squared)) + geom_density()+
   labs(title = "Distribution of R-squared")
 ```
 
 <img src="hw6_files/figure-gfm/unnamed-chunk-11-1.png" width="90%" />
+
+The density curve for $\hat r^2$ is slightly left-skewed with a mean
+around 0.9168 and a sd around 0.0136
