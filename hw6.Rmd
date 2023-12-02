@@ -197,3 +197,29 @@ r_squared %>%
 ```
 
 The density curve for $\hat r^2$ is slightly left-skewed with a mean around `r round(r_squared_mean,4)` and a sd around `r round(r_squared_sd,4)`
+
+### 95% CI for $\log(\hat\beta_1\times \hat\beta_2)$
+```{r}
+CI_result <-
+  log_betas %>%
+  summarize(ci_lower = quantile(log_betas, 0.025, na.rm = TRUE),
+            ci_upper = quantile(log_betas, 0.975, na.rm = TRUE))
+
+CI_result_lower <- CI_result %>% pull(ci_lower)
+CI_result_upper <- CI_result %>% pull(ci_upper)
+```
+
+95% Confidence Interval of $\log(\hat\beta_1\times \hat\beta_2)$ is between (`r round(CI_result_lower,4)`,`r round(CI_result_upper,4)`)
+
+### 95% CI for $\hat r^2$
+```{r}
+CI_result2 <-
+  r_squared %>%
+  summarize(ci_lower = quantile(r.squared, 0.025),
+            ci_upper = quantile(r.squared, 0.975)) 
+
+CI_result_lower2 <- CI_result2 %>% pull(ci_lower)
+CI_result_upper2 <- CI_result2 %>% pull(ci_upper)
+```
+
+95% Confidence Interval of $\hat r^2$ is between (`r round(CI_result_lower2,4)`,`r round(CI_result_upper2,4)`)

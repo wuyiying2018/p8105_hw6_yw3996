@@ -286,3 +286,32 @@ r_squared %>%
 
 The density curve for $\hat r^2$ is slightly left-skewed with a mean
 around 0.9168 and a sd around 0.0136
+
+### 95% CI for $\log(\hat\beta_1\times \hat\beta_2)$
+
+``` r
+CI_result <-
+  log_betas %>%
+  summarize(ci_lower = quantile(log_betas, 0.025, na.rm = TRUE),
+            ci_upper = quantile(log_betas, 0.975, na.rm = TRUE))
+
+CI_result_lower <- CI_result %>% pull(ci_lower)
+CI_result_upper <- CI_result %>% pull(ci_upper)
+```
+
+95% Confidence Interval of $\log(\hat\beta_1\times \hat\beta_2)$ is
+between (-9.1341,-4.5757)
+
+### 95% CI for $\hat r^2$
+
+``` r
+CI_result2 <-
+  r_squared %>%
+  summarize(ci_lower = quantile(r.squared, 0.025),
+            ci_upper = quantile(r.squared, 0.975)) 
+
+CI_result_lower2 <- CI_result2 %>% pull(ci_lower)
+CI_result_upper2 <- CI_result2 %>% pull(ci_upper)
+```
+
+95% Confidence Interval of $\hat r^2$ is between (0.889,0.9406)
