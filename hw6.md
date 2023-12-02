@@ -315,3 +315,11 @@ CI_result_upper2 <- CI_result2 %>% pull(ci_upper)
 ```
 
 95% Confidence Interval of $\hat r^2$ is between (0.889,0.9406)
+
+## 3
+
+### Importing data
+
+``` r
+birthweight <- read_csv("birthweight.csv")
+```
