@@ -244,3 +244,10 @@ cleaned_birthweight <-
          )
 ```
 Changed categorical variables: babysex, frace, malform, and mrace into factors and recoded numerical values of these categorical variables to their associated information.
+
+### Checking Missing Values
+```{r}
+skimr::skim(cleaned_birthweight)
+```
+
+There is no missing data. The dimension of the birthweight data is `r nrow(cleaned_birthweight)` x `r ncol(cleaned_birthweight)`. The `r ncol(cleaned_birthweight)` variables include: `r names(cleaned_birthweight)`.
