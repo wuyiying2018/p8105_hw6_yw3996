@@ -92,3 +92,6 @@ ggplot(city_or, aes(x = reorder(city_state, OR), y = OR)) +
   ggtitle("Adjusted Odds Ratios for Solving Homicides by City")
 ```
 
+The plot displays the adjusted odds ratios (ORs) for solving homicides by city, comparing male to female victims. It appears that most cities have an OR less than 1, suggesting that homicides with male victims are less likely to be solved than those with female victims when controlling for other factors. This trend is consistent across various cities, indicating a possible widespread pattern. Some cities have notably wider confidence intervals, suggesting less precision in the estimate possibly due to smaller sample sizes or greater variability in the data. The cities are ranked by their estimated ORs, highlighting differences in the likelihood of solving homicides involving male victims across different urban areas. 
+
+## 2
