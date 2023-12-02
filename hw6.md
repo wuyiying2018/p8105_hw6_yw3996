@@ -323,3 +323,23 @@ CI_result_upper2 <- CI_result2 %>% pull(ci_upper)
 ``` r
 birthweight <- read_csv("birthweight.csv")
 ```
+
+### Tidying and wrangling the data
+
+``` r
+cleaned_birthweight <-
+  birthweight %>% 
+  janitor::clean_names() %>%
+  mutate(across(.cols = c(babysex, frace, malform, mrace), as.factor)) %>%
+  mutate(babysex = ifelse(babysex == "1", "male","female"),
+         malform = ifelse(malform == "0", "absent","present"),
+         frace = recode(frace, "1" = "White", "2" = "Black", "3" = "Asian", 
+                        "4" = "Puerto Rican", "8" = "Other", "9" = "Unknown"),
+         mrace = recode(mrace, "1" = "White", "2" = "Black", 
+                        "3" = "Asian", "4" = "Puerto Rican", "8" = "Other")
+         )
+```
+
+Changed categorical variables: babysex, frace, malform, and mrace into
+factors and recoded numerical values of these categorical variables to
+their associated information.
