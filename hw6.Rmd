@@ -110,3 +110,13 @@ weather_df =
   select(name, id, everything())
 ```
 
+### Fitting a simple linear regression model
+```{r}
+fit0 <- lm(tmax ~ tmin + prcp, data = weather_df)
+```
+
+### Bootstrap analysis for $\hat r^2$ and $\log(\hat\beta_1\times \hat\beta_2)$
+```{r}
+set.seed(8105)
+```
+
