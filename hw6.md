@@ -200,4 +200,63 @@ fit0 <- lm(tmax ~ tmin + prcp, data = weather_df)
 
 ``` r
 set.seed(8105)
+
+# Generating 5000 bootstraps of the dataset
+boot_sample = function(df) {
+  sample_frac(df, replace = TRUE)
+}
+
+boot_straps = 
+  data_frame(
+    strap_number = 1:5000,
+    strap_sample = rerun(5000, boot_sample(weather_df))
+  )
+
+# Generating 5000 bootstrap estimates
+bootstrap_results = 
+  boot_straps %>% 
+  mutate(
+    models = map(strap_sample, ~lm(tmax ~ tmin + prcp, data = .x) ),
+    results = map(models, broom::tidy)) %>% 
+  select(-strap_sample, -models) %>% 
+  unnest(results) 
+
+# Computing log_betas and getting 5000 of those estiamtes
+log_betas <-  
+  bootstrap_results %>%
+  group_by(strap_number) %>%
+  summarise(log_betas = log(estimate[2] * estimate[3])) %>%
+  select(log_betas, strap_number)
+
+# Generating 5000 bootstrap estimates
+bootstrap_results2 <- 
+  boot_straps %>% 
+  mutate(
+    models = map(strap_sample, ~lm(tmax ~ tmin + prcp, data = .x) ),
+    results = map(models, broom::glance)) %>% 
+  select(-strap_sample, -models) %>% 
+  unnest(results) 
+
+# Getting 5000 R-Squared estimates
+r_squared <- 
+  bootstrap_results2 %>%
+  select(r.squared, strap_number)
 ```
+
+### Fitting density plots of two estimates
+
+``` r
+log_betas %>%
+  ggplot(aes(x = log_betas)) + geom_density() +
+  labs(title = "Distribution of log(Beta1 * Beta2)")
+```
+
+<img src="hw6_files/figure-gfm/unnamed-chunk-10-1.png" width="90%" />
+
+``` r
+r_squared %>%
+  ggplot(aes(x = r.squared)) + geom_density()+
+  labs(title = "Distribution of R-squared")
+```
+
+<img src="hw6_files/figure-gfm/unnamed-chunk-11-1.png" width="90%" />
