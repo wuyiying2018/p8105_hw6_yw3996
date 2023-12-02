@@ -49,3 +49,26 @@ adjusted_or
 CI_adjusted_or
 ```
 
+The adjusted odds ratio of 0.426 indicates that in Baltimore, MD, the likelihood of resolving a homicide case involving male victims is 42.6% of that for female victims, after adjusting for additional variables. This suggests a lower probability of solving cases with male victims compared to female ones. The 95% confidence interval, ranging from 0.324 to 0.558, supports this finding and is statistically significant, evidenced by the fact that it does not include 1. 
+
+### Run glm for each city and extract the odds ratio (OR) for male vs. female victims
+
+```{r,warning=FALSE}
+# Fit models for each city and extract ORs
+city_models <- homicide_clean %>%
+               group_by(city_state) %>%
+               nest() %>%
+               mutate(model = map(data, ~glm(solved ~ victim_age + victim_sex + victim_race, data = .x, family = "binomial")),
+                      tidied = map(model, broom::tidy,conf.int = TRUE))
+
+# Unnest the data
+city_or <- city_models %>%
+           unnest(tidied) %>%
+           filter(term == "victim_sexMale") %>%
+            mutate(OR = exp(estimate),
+                            CI_lower = exp(conf.low),
+                            CI_upper = exp(conf.high))%>%
+           select(city_state, term, OR, CI_lower, CI_upper)
+city_or%>%knitr::kable(digits = 4)
+```
+
