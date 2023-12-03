@@ -503,8 +503,8 @@ average number of cigarettes smoked per day during pregnancy explains
 
 ``` r
 cleaned_birthweight %>%
-  modelr::add_predictions(model_fit) %>%
-  modelr::add_residuals(model_fit) %>%
+  add_predictions(model_fit) %>%
+  add_residuals(model_fit) %>%
   ggplot(aes(x = pred, y = resid)) +
   geom_point() +
   geom_hline(yintercept = 0, linetype = "dashed") +
@@ -512,3 +512,71 @@ cleaned_birthweight %>%
 ```
 
 <img src="hw6_files/figure-gfm/unnamed-chunk-20-1.png" width="90%" />
+
+The “Residuals vs Fitted Plot” for the birthweight model reveals that
+the residuals are generally scattered around the zero line, which aligns
+with the expectations for consistent variance and a linear relationship.
+Nevertheless, some notable exceptions, particularly at higher fitted
+values, point to potential outliers that deviate significantly from the
+model’s predictions. The plot does not show any distinct trends that
+would suggest a violation of the linearity or homoscedasticity
+assumptions.
+
+### Computing rmse of models through cross validaiton
+
+``` r
+set.seed(8105)
+
+cv_dataset <-
+  cleaned_birthweight %>% 
+  crossv_mc(n = 100,test = 0.2)
+  
+
+cv_df <- 
+  cv_dataset %>%
+   mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble))
+
+cv_df <-
+  cv_df %>%
+    mutate(
+    my_model  = map(train, ~lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace + parity + smoken, data = .x)),
+    model_length_gaweeks = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)),
+    model_interactions  = map(train, ~lm(bwt ~ (bhead + blength + babysex)^3, data = .x))
+    ) %>%
+   mutate(
+    rmse_my_model = map2_dbl(my_model, test, ~rmse(model = .x, data = .y)),
+    rmse_length_gaweeks = map2_dbl(model_length_gaweeks, test, ~rmse(model = .x, data = .y)),
+    rmse_interactions = map2_dbl(model_interactions, test, ~rmse(model = .x, data = .y))
+   )
+```
+
+### Fitting the distribution of rmse of the models
+
+``` r
+cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + 
+  geom_boxplot() +
+  labs(title = 
+  "Prediction Error Distributions across Models", 
+       x = "Models", y = "Root Mean Square Error")  +
+  scale_x_discrete(
+    labels = c("My Model", "Length + Gestational Age", "Interactions Model")) +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+<img src="hw6_files/figure-gfm/unnamed-chunk-22-1.png" width="90%" />
+
+Comparing models with respect to the cross-validated prediction error.
+By and large, my model seems to have the lowest prediction error (rmse)
+and hence is potentially the best model, followed by Interactions Model
+and test Length + Gestational Age Model when comparing the medians and
+the overall distribution of the box plots.
