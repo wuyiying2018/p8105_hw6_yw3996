@@ -458,3 +458,57 @@ The coefficients for babysex, bhead, blength, delwt, gaweeks, mrace,
 parity, and smoken are significant at the 0.05 level. The NAs for
 pnumlbw, pnumsga, and wtgain suggest that there are issues with these
 variables in the model, such as multicollinearity.
+
+### Proposed model
+
+``` r
+model_fit <- lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace + parity + smoken, data = cleaned_birthweight)
+
+summary(model_fit) %>% 
+  broom::tidy() %>%
+  select(term, estimate, p.value)%>%
+  knitr::kable(digits = 4)
+```
+
+| term              |   estimate | p.value |
+|:------------------|-----------:|--------:|
+| (Intercept)       | -5793.9324 |  0.0000 |
+| babysexmale       |   -28.6609 |  0.0007 |
+| bhead             |   131.6982 |  0.0000 |
+| blength           |    75.8653 |  0.0000 |
+| delwt             |     2.2649 |  0.0000 |
+| gaweeks           |    12.1400 |  0.0000 |
+| mraceBlack        |  -146.7893 |  0.0000 |
+| mraceAsian        |   -71.5880 |  0.0920 |
+| mracePuerto Rican |  -119.5979 |  0.0000 |
+| parity            |    98.6113 |  0.0150 |
+| smoken            |    -4.7472 |  0.0000 |
+
+``` r
+summary(model_fit) %>% 
+  broom::glance()%>%
+  knitr::kable(digits = 4)
+```
+
+| r.squared | adj.r.squared |    sigma | statistic | p.value |  df | df.residual | nobs |
+|----------:|--------------:|---------:|----------:|--------:|----:|------------:|-----:|
+|    0.7148 |        0.7142 | 273.8126 |  1085.643 |       0 |  10 |        4331 | 4342 |
+
+Baby’s gender, head circumference, length at birth, gestational age in
+weeks, mother’s race, number of live births prior to this pregnancy, and
+average number of cigarettes smoked per day during pregnancy explains
+71.48% of the variability in birthweight.
+
+### Model residuals
+
+``` r
+cleaned_birthweight %>%
+  modelr::add_predictions(model_fit) %>%
+  modelr::add_residuals(model_fit) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "Fitted Values", y = "Residuals", title = "Residuals vs Fitted Plot for Birthweight Model")
+```
+
+<img src="hw6_files/figure-gfm/unnamed-chunk-20-1.png" width="90%" />

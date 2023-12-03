@@ -259,3 +259,33 @@ summary(full_model)
 ```
 
 The coefficients for babysex, bhead, blength, delwt, gaweeks, mrace, parity, and smoken are significant at the 0.05 level. The NAs for pnumlbw, pnumsga, and wtgain suggest that there are issues with these variables in the model, such as multicollinearity.
+
+### Proposed model
+```{r}
+model_fit <- lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace + parity + smoken, data = cleaned_birthweight)
+
+summary(model_fit) %>% 
+  broom::tidy() %>%
+  select(term, estimate, p.value)%>%
+  knitr::kable(digits = 4)
+```
+
+```{r}
+summary(model_fit) %>% 
+  broom::glance()%>%
+  knitr::kable(digits = 4)
+```
+
+Baby's gender, head circumference, length at birth, gestational age in weeks, mother’s race, number of live births prior to this pregnancy, and average number of cigarettes smoked per day during pregnancy explains 71.48% of the variability in birthweight. 
+
+### Model residuals
+```{r}
+cleaned_birthweight %>%
+  modelr::add_predictions(model_fit) %>%
+  modelr::add_residuals(model_fit) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "Fitted Values", y = "Residuals", title = "Residuals vs Fitted Plot for Birthweight Model")
+```
+
